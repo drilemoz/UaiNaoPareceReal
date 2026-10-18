@@ -1,4 +1,6 @@
-# Validação da alpha.1
+# Validação da alpha.2
+
+Workflow #1: falhou antes da compilação Android, na tarefa **Instalar SDK Android 36**, com `sdkmanager: command not found` (exit code 127). Esta alpha.2 adiciona `android-actions/setup-android@v4` e testa a presença do comando antes da instalação.
 
 Verificações locais possíveis: `python3 tools/validate_source.py`, parser JSON/XML, verificação dos arquivos do código e ZIP.
 

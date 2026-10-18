@@ -53,9 +53,10 @@ class _MainShellState extends State<MainShell> {
       child:Padding(padding:const EdgeInsets.all(24),child:Column(mainAxisSize:MainAxisSize.min,
         crossAxisAlignment:CrossAxisAlignment.start,children:[
         Icon(Icons.auto_awesome,color:Theme.of(ctx).colorScheme.primary,size:36),
-        const SizedBox(height:12),Text('Novidades • alpha.1',style:Theme.of(ctx).textTheme.headlineSmall),
+        const SizedBox(height:12),Text('Novidades • alpha.2',style:Theme.of(ctx).textTheme.headlineSmall),
         const SizedBox(height:13),
-        const Text('• Tema azul, aparência AMOLED e painel organizado.\n'
+        const Text('• Corrigida a preparação do SDK Android no workflow do GitHub Actions.\n'
+          '• Permanecem o tema azul, a aparência AMOLED e o painel organizado.\n'
           '• Configuração orientada da Meta API, importação, teste e armazenamento seguro do token.\n'
           '• Páginas autorizadas, publicações, reações retornadas e histórico local.\n'
           '• Consulta opcional de pessoas que reagiram, quando a Meta disponibilizar.\n'

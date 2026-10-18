@@ -1,10 +1,12 @@
 # Uai, Não Parece Real
 
-**0.1.0-alpha.1** | Flutter | Android | idioma pt-BR
+**0.1.0-alpha.2** | Flutter | Android | idioma pt-BR
 
 Aplicativo independente para acompanhar uma página autorizada do Facebook pela Meta Graph API, com visual azul inspirado no **Uai Vozes v0.26**. Não é afiliado ao Facebook nem à Meta.
 
-## Funcionalidades da alpha.1
+## Funcionalidades da alpha.2
+
+**Correção do build 1:** a primeira execução parou em `sdkmanager: command not found` antes da compilação. A alpha.2 adiciona `android-actions/setup-android@v4` para disponibilizar as ferramentas de linha de comando do SDK, antes de instalar API 36. Ainda é necessária validação no GitHub Actions.
 
 - Primeira abertura: **Novidades** e **assistente de configuração** com passos guiados.
 - Ações para colar, importar, testar, guardar e obter token, usando Graph API Explorer.
@@ -25,7 +27,7 @@ Aplicativo independente para acompanhar uma página autorizada do Facebook pela 
 4. Cole ou importe o token no aplicativo; toque em **Testar**, **Guardar** e escolha a página.
 5. Se já possuir **token de Página**, tente **Conectar token direto de Página**.
 
-**Atenção:** Graph API Explorer é recomendado para testes próprios. Tokens podem expirar e podem precisar de permissões/revisão App Review. Não embuta App Secret em apps móveis. A alpha.1 não implementa OAuth de produção, publicação nem monitoramento em segundo plano.
+**Atenção:** Graph API Explorer é recomendado para testes próprios. Tokens podem expirar e podem precisar de permissões/revisão App Review. Não embuta App Secret em apps móveis. A alpha.2 não implementa OAuth de produção, publicação nem monitoramento em segundo plano.
 
 ## Gerar APK no GitHub Actions
 
@@ -33,7 +35,7 @@ Aplicativo independente para acompanhar uma página autorizada do Facebook pela 
 2. Em **Actions > Gerar APK Uai Nao Parece Real > Run workflow**, execute o workflow.
 3. Mesmo sem Secrets, o workflow valida, roda testes e compila **APK Debug ARM64 de teste**. O Android gerado e o APK não estão dentro do ZIP de código-fonte.
 4. O GitHub Actions distribui seus **Artifacts** em uma embalagem ZIP padrão da plataforma. O arquivo dentro é um `.apk` real.
-5. Para APK **release estável** e AAB Google Play, configure os 4 GitHub Secrets `KEYSTORE_BASE64`, `KEYSTORE_PASSWORD`, `KEY_ALIAS` e `KEY_PASSWORD`. O workflow gera `.apk` e `.aab` assinados e pode anexá-los **diretamente** ao GitHub Releases (sem ZIP), pela tag `v0.1.0-alpha.1` ou entrada `publicar_release`.
+5. Para APK **release estável** e AAB Google Play, configure os 4 GitHub Secrets `KEYSTORE_BASE64`, `KEYSTORE_PASSWORD`, `KEY_ALIAS` e `KEY_PASSWORD`. O workflow gera `.apk` e `.aab` assinados e pode anexá-los **diretamente** ao GitHub Releases (sem ZIP), pela tag `v0.1.0-alpha.2` ou entrada `publicar_release`.
 
 **Não compartilhe keystore privada** e não use o certificado debug para futuras atualizações. Não altere o `applicationId` depois de publicar.
 
