@@ -9,10 +9,10 @@ for file in files:
     assert file.is_file() and file.stat().st_size > 0, f'faltando: {file}'
 identity = json.loads((root/'app_identity.json').read_text())
 manager = json.loads((root/'github-manager.json').read_text())
-assert identity['versionCode'] == manager['versionCode'] == 3
-assert identity['versionName'] == manager['versionName'] == '0.1.0-alpha.3'
+assert identity['versionCode'] == manager['versionCode'] == 4
+assert identity['versionName'] == manager['versionName'] == '0.1.0-alpha.4'
 assert identity['packageName'] == 'com.drilemoz.uainaoparecereal'
-assert 'version: 0.1.0-alpha.3+3' in (root/'pubspec.yaml').read_text()
+assert 'version: 0.1.0-alpha.4+4' in (root/'pubspec.yaml').read_text()
 assert 'targetSdk = 36' in (root/'scripts/prepare_android.sh').read_text()
 assert 'compileSdk = 36' in (root/'scripts/prepare_android.sh').read_text()
 workflow = (root/'.github/workflows/gerar-apk.yml').read_text()
@@ -21,6 +21,13 @@ assert 'command -v sdkmanager' in workflow
 assert "sdkmanager --install 'platforms;android-36' 'build-tools;36.0.0'" in workflow
 assert 'yes | sdkmanager' not in workflow, 'Nao executar sdkmanager antes de preparar o ambiente'
 assert 'flutter build apk --debug' in workflow
+assert 'tools/check_apk.py' in workflow, 'Verificacao de APK ausente no workflow'
+assert 'uses: softprops/action-gh-release@v2' in workflow, 'Faltou publicar APK direto em Releases'
+assert 'files: dist/publicar/*' in workflow
+assert 'uses: actions/upload-artifact' not in workflow, 'Actions serve artifact como ZIP; nao apresentar como APK'
+assert 'v0.1.0-alpha.4' in workflow
+assert 'Uai-Nao-Parece-Real-v0.1.0-alpha.4-debug.apk' in workflow
+assert (root / 'tools/check_apk.py').is_file()
 assert 'flutter build appbundle --release' in (root/'.github/workflows/gerar-apk.yml').read_text()
 assert 'KEYSTORE_BASE64' in (root/'.github/workflows/gerar-apk.yml').read_text()
 ET.parse(root/'scripts/AndroidManifest.xml')

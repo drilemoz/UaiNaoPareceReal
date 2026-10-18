@@ -3,7 +3,7 @@
   "platform": "android",
   "framework": "flutter",
   "packageName": "com.drilemoz.uainaoparecereal",
-  "versionName": "0.1.0-alpha.3",
-  "versionCode": 3,
-  "apkFileName": "Uai-Nao-Parece-Real-v0.1.0-alpha.3.apk"
+  "versionName": "0.1.0-alpha.4",
+  "versionCode": 4,
+  "apkFileName": "Uai-Nao-Parece-Real-v0.1.0-alpha.4-debug.apk"
 }

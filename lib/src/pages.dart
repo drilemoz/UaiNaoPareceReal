@@ -293,7 +293,7 @@ class SettingsPage extends StatelessWidget {
       const SectionTitle('Sobre'),
       ListTile(leading:const Icon(Icons.new_releases_outlined),title:const Text('O que mudou?'),onTap:showChanges),
       ListTile(leading:const Icon(Icons.code),title:const Text('Uai, Não Parece Real'),
-        subtitle:const Text('0.1.0-alpha.3 • build 3 • Flutter / Android\nAplicativo independente; não afiliado à Meta.')),
+        subtitle:const Text('0.1.0-alpha.4 • build 4 • Flutter / Android\nAplicativo independente; não afiliado à Meta.')),
       const SizedBox(height:50),
     ])));
 }

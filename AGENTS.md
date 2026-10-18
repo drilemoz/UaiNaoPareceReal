@@ -8,3 +8,5 @@
 6. APK Debug obrigatório no CI; APK release e AAB assinados quando os Secrets existirem. Não forçar debug como release para Play.
 7. Compilação Flutter e integração Meta reais precisam ser verificadas em GitHub Actions/aparelho; nunca marcá-las como aprovadas sem execução.
 8. Para Google Play, usar targetSdk 36 e manter dados de privacidade atualizados; avaliar atualizações futuras do Android/Meta.
+
+9. APK de download direto: GitHub Actions artifacts são sempre ZIP; downloads instaláveis devem vir de GitHub Releases com arquivo `.apk` real. Build Debug só com sufixo `-debug.apk`; não confundir com Release assinado. Validar a estrutura do APK antes de publicar.

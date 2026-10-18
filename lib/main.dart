@@ -53,7 +53,7 @@ class _MainShellState extends State<MainShell> {
       child:Padding(padding:const EdgeInsets.all(24),child:Column(mainAxisSize:MainAxisSize.min,
         crossAxisAlignment:CrossAxisAlignment.start,children:[
         Icon(Icons.auto_awesome,color:Theme.of(ctx).colorScheme.primary,size:36),
-        const SizedBox(height:12),Text('Novidades • alpha.3',style:Theme.of(ctx).textTheme.headlineSmall),
+        const SizedBox(height:12),Text('Novidades • alpha.4',style:Theme.of(ctx).textTheme.headlineSmall),
         const SizedBox(height:13),
         const Text('• Corrigido teste de leitura JSON UTF-8, incluindo acentos e emoji.\n'
           '• Análise Dart aprovada no workflow 2; compilação APK ainda pendente.\n'

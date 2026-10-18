@@ -1,11 +1,16 @@
 {
   "projectName": "Uai, Não Parece Real",
   "platform": "Flutter Android",
-  "versionName": "0.1.0-alpha.3",
-  "versionCode": 3,
+  "versionName": "0.1.0-alpha.4",
+  "versionCode": 4,
   "workflow": ".github/workflows/gerar-apk.yml",
   "workflowName": "Gerar APK Uai Nao Parece Real",
-  "apkArtifact": "Uai-Nao-Parece-Real-v0.1.0-alpha.3-debug-apk",
-  "apkFileName": "Uai-Nao-Parece-Real-v0.1.0-alpha.3-debug.apk",
-  "notes": "Workflow sempre gera APK de teste (Actions). Com quatro Secrets de assinatura gera APK release, AAB e publicação direta em Releases."
+  "apkArtifact": null,
+  "apkFileName": "Uai-Nao-Parece-Real-v0.1.0-alpha.4-debug.apk",
+  "notes": "Baixar APK direto em Releases. Actions artifacts sao ZIP e nao devem ser validados como APK. Debug e publicado se nao houver os quatro Secrets; APK release e AAB quando assinados.",
+  "releaseTag": "v0.1.0-alpha.4",
+  "releaseAssets": [
+    "Uai-Nao-Parece-Real-v0.1.0-alpha.4-debug.apk",
+    "Uai-Nao-Parece-Real-v0.1.0-alpha.4-release.apk"
+  ]
 }

@@ -1,23 +1,22 @@
-# Validação da alpha.3
+# Validação da alpha.4
 
-## Evidência do workflow #2 (18/10/2026 UTC)
+## Evidência da captura do GitHub Manager
 
-- `sdkmanager` e SDK Android 36: concluídos.
-- `flutter pub get`: concluído.
-- `python3 tools/validate_source.py`: APROVADO.
-- `flutter analyze`: **No issues found!** (6,4 segundos).
-- `flutter test`: **9 aprovados, 1 falhou**, em `test/meta_api_test.dart` > `envia bearer via cabeçalho, não via URL`.
-- Mensagem do teste falho: `A Meta retornou dados inesperados.`; origem `MetaApi.get` ao decodificar bytes. O mock `http.Response(String, 200)` usava Latin-1 sem charset, mas continha `Página Teste` com acento. JSON da API usa UTF-8. Correção no mock, não no decoder seguro da API.
-- O APK não foi compilado no workflow #2 porque `flutter test` encerrou o job com exit code 1.
+- Aviso `DOWNLOAD_CONTENT_INVALID`: arquivo baixado não tem estrutura mínima de APK.
+- Workflow alpha.3 armazenava APK por `actions/upload-artifact@v4`, cujo download da API do GitHub é um ZIP externo.
+- A captura sozinha não prova que o build da alpha.3 falhou; é preciso conferir a conclusão do workflow e o tipo de download.
 
-## Alterações alpha.3
+## Mudanças na alpha.4
 
-- Fixture usa bytes UTF-8 explicitamente. Aserção verifica nome `Página Teste`.
-- Teste adicional garante acentos e emoji em JSON UTF-8 sem charset.
-- `tools/validate_source.py` assegura que fixture UTF-8 permanece presente.
+- Retirado o upload de artifacts que induzia download ZIP rotulado como APK.
+- Release direta passa a ser publicada automaticamente após build e testes bem-sucedidos, mesmo sem assinatura de produção.
+- `-debug.apk` quando não há Secrets; `-release.apk` e `.aab` somente com os quatro Secrets de assinatura.
+- `tools/check_apk.py` valida magic ZIP, estrutura interna de APK e rejeita ZIP de artifact que apenas contém outro APK.
+- Testes de `check_apk` para APK mínimo, inválido, e arquivo ZIP externo.
+- Versionamento sequencial alpha.4+4.
 
-## Validações locais alpha.3
+## Validações locais
 
-Executar `python3 tools/validate_source.py`, parser JSON/XML, Bash `-n`, YAML e verificação CRC do ZIP. Ausência de Flutter/Dart no ambiente impede rodar `flutter test`, `flutter analyze` e Gradle localmente.
+Executar `python3 tools/validate_source.py`, `python3 -m unittest discover -s tools -p 'test_*.py'`, parser JSON/XML, `bash -n`, YAML e integridade CRC do ZIP.
 
-**Pendências:** executar o workflow da alpha.3; testar importação SAF, login Meta, falhas de token, comportamento API 36 e APK em Android físico. Não presumir aprovação Google Play.
+**Pendências:** executar o workflow alpha.4; teste `flutter analyze`, `flutter test`, build Debug e assinatura Release em GitHub Actions; verificar a presença de APK direto em Assets de Releases; instalar no Android. Não presumir aprovação pelo Google Play.

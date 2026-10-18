@@ -1,5 +1,16 @@
 # Histórico
 
+## 0.1.0-alpha.4 (17/10/2026)
+
+- Diagnóstico da mensagem GitHub Manager `DOWNLOAD_CONTENT_INVALID`: GitHub Actions entrega artifacts em ZIP, não APK bruto.
+- O workflow passa a publicar automaticamente o APK como asset direto de GitHub Releases, mesmo sem Secrets; neste caso o arquivo é marcado `-debug.apk`.
+- Quando há Secrets completos, publica `-release.apk` assinado e `.aab` para Play Console, sem apresentar Debug como Release.
+- Adicionada verificação do conteúdo mínimo do APK antes da publicação, com testes contra ZIP externo e bytes inválidos.
+- Removido o artifact Actions que induzia o GitHub Manager a tratar ZIP como APK.
+- Atualização sequencial para versionCode 4 e metadados/docs sincronizados.
+- Ainda pendem build Flutter/Android no CI, download real via Releases e teste Android.
+
+
 ## 0.1.0-alpha.3 (17/10/2026)
 
 - Corrigido o único teste falho do workflow #2: fixture HTTP com acentos era codificada implicitamente em Latin-1 e `MetaApi.get()` espera JSON UTF-8.
@@ -10,7 +21,7 @@
 - Versões, notas, tela de novidades, GitHub Manager e nomes de artefatos sincronizados para versionCode 3.
 - Sem alterações nas funções da API Meta nem no armazenamento de tokens.
 
-## 0.1.0-alpha.3 (17/10/2026)
+## 0.1.0-alpha.2 (17/10/2026)
 
 - Corrigido workflow 1: ausência de `sdkmanager` no `ubuntu-latest` (exit code 127).
 - Adicionado `android-actions/setup-android@v4` e verificação explícita do SDK 36.

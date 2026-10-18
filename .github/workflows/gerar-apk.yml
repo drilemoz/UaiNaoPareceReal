@@ -2,14 +2,7 @@ name: Gerar APK Uai Nao Parece Real
 on:
   push:
     branches: [main, master]
-    tags: ['v*']
   workflow_dispatch:
-    inputs:
-      publicar_release:
-        description: 'Publicar Release com APK de produção, caso assinado'
-        required: false
-        type: boolean
-        default: false
 permissions:
   contents: write
 jobs:
@@ -54,6 +47,8 @@ jobs:
         run: flutter pub get
       - name: Validar fonte e política de credenciais
         run: python3 tools/validate_source.py
+      - name: Testar validador de APK (inclui rejeicao de artifact ZIP)
+        run: python3 -m unittest discover -s tools -p 'test_*.py'
       - name: Analisar Dart
         run: flutter analyze
       - name: Testes Flutter
@@ -63,17 +58,10 @@ jobs:
       - name: Exportar APK de teste (arquivo .apk)
         run: |
           mkdir -p dist
-          cp build/app/outputs/flutter-apk/app-debug.apk dist/Uai-Nao-Parece-Real-v0.1.0-alpha.3-debug.apk
+          cp build/app/outputs/flutter-apk/app-debug.apk dist/Uai-Nao-Parece-Real-v0.1.0-alpha.4-debug.apk
           sha256sum dist/*.apk > dist/APK-SHA256.txt
-      - name: Upload APK de teste para Actions
-        uses: actions/upload-artifact@v4
-        with:
-          name: Uai-Nao-Parece-Real-v0.1.0-alpha.3-debug-apk
-          path: |
-            dist/*.apk
-            dist/APK-SHA256.txt
-          if-no-files-found: error
-          retention-days: 30
+      - name: Verificar integridade do APK Debug (arquivo real)
+        run: python3 tools/check_apk.py dist/Uai-Nao-Parece-Real-v0.1.0-alpha.4-debug.apk
       - name: Verificar Secrets completos para release
         id: signing
         env:
@@ -107,27 +95,38 @@ jobs:
       - name: Exportar APK e AAB assinados
         if: steps.signing.outputs.available == 'true'
         run: |
-          cp build/app/outputs/flutter-apk/app-release.apk dist/Uai-Nao-Parece-Real-v0.1.0-alpha.3.apk
-          cp build/app/outputs/bundle/release/app-release.aab dist/Uai-Nao-Parece-Real-v0.1.0-alpha.3.aab
-          sha256sum dist/Uai-Nao-Parece-Real-v0.1.0-alpha.3.apk dist/Uai-Nao-Parece-Real-v0.1.0-alpha.3.aab > dist/RELEASE-SHA256.txt
-      - name: Upload APK e AAB assinados
+          cp build/app/outputs/flutter-apk/app-release.apk dist/Uai-Nao-Parece-Real-v0.1.0-alpha.4.apk
+          cp build/app/outputs/bundle/release/app-release.aab dist/Uai-Nao-Parece-Real-v0.1.0-alpha.4.aab
+          sha256sum dist/Uai-Nao-Parece-Real-v0.1.0-alpha.4.apk dist/Uai-Nao-Parece-Real-v0.1.0-alpha.4.aab > dist/RELEASE-SHA256.txt
+      - name: Verificar integridade do APK Release
         if: steps.signing.outputs.available == 'true'
-        uses: actions/upload-artifact@v4
-        with:
-          name: Uai-Nao-Parece-Real-v0.1.0-alpha.3-signed
-          path: |
-            dist/Uai-Nao-Parece-Real-v0.1.0-alpha.3.apk
-            dist/Uai-Nao-Parece-Real-v0.1.0-alpha.3.aab
-            dist/RELEASE-SHA256.txt
-          if-no-files-found: error
-      - name: Publicar arquivos .apk e .aab diretamente no GitHub Releases
-        if: steps.signing.outputs.available == 'true' && (startsWith(github.ref, 'refs/tags/v') || (github.event_name == 'workflow_dispatch' && inputs.publicar_release))
+        run: python3 tools/check_apk.py dist/Uai-Nao-Parece-Real-v0.1.0-alpha.4.apk
+      # Todo artifact de GitHub Actions e baixado como ZIP pela API.
+      # O GitHub Manager precisa receber o arquivo APK direto, via Releases.
+      - name: Preparar APK direto para GitHub Releases
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p dist/publicar
+          if [[ "${{ steps.signing.outputs.available }}" == 'true' ]]; then
+            cp dist/Uai-Nao-Parece-Real-v0.1.0-alpha.4.apk dist/publicar/Uai-Nao-Parece-Real-v0.1.0-alpha.4-release.apk
+            cp dist/Uai-Nao-Parece-Real-v0.1.0-alpha.4.aab dist/publicar/
+            echo 'APK Release assinado + AAB foram preparados.' >> "$GITHUB_STEP_SUMMARY"
+          else
+            cp dist/Uai-Nao-Parece-Real-v0.1.0-alpha.4-debug.apk dist/publicar/
+            echo 'APK Debug de teste (sem Secrets) foi preparado. Nao usar na Play Store.' >> "$GITHUB_STEP_SUMMARY"
+          fi
+          sha256sum dist/publicar/* > dist/publicar/SHA256SUMS.txt
+          python3 tools/check_apk.py "$(find dist/publicar -maxdepth 1 -type f -name '*.apk' -print -quit)"
+          ls -lh dist/publicar/
+      - name: Publicar APK direto no GitHub Releases
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v0.1.0-alpha.3
-          name: Uai, Não Parece Real alpha.3
+          tag_name: v0.1.0-alpha.4
+          target_commitish: ${{ github.sha }}
+          name: Uai, Não Parece Real 0.1.0-alpha.4
           prerelease: true
+          draft: false
           body_path: RELEASE_NOTES.md
-          files: |
-            dist/Uai-Nao-Parece-Real-v0.1.0-alpha.3.apk
-            dist/Uai-Nao-Parece-Real-v0.1.0-alpha.3.aab
+          files: dist/publicar/*
+          fail_on_unmatched_files: true
