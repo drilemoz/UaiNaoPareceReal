@@ -9,10 +9,10 @@ for file in files:
     assert file.is_file() and file.stat().st_size > 0, f'faltando: {file}'
 identity = json.loads((root/'app_identity.json').read_text())
 manager = json.loads((root/'github-manager.json').read_text())
-assert identity['versionCode'] == manager['versionCode'] == 2
-assert identity['versionName'] == manager['versionName'] == '0.1.0-alpha.2'
+assert identity['versionCode'] == manager['versionCode'] == 3
+assert identity['versionName'] == manager['versionName'] == '0.1.0-alpha.3'
 assert identity['packageName'] == 'com.drilemoz.uainaoparecereal'
-assert 'version: 0.1.0-alpha.2+2' in (root/'pubspec.yaml').read_text()
+assert 'version: 0.1.0-alpha.3+3' in (root/'pubspec.yaml').read_text()
 assert 'targetSdk = 36' in (root/'scripts/prepare_android.sh').read_text()
 assert 'compileSdk = 36' in (root/'scripts/prepare_android.sh').read_text()
 workflow = (root/'.github/workflows/gerar-apk.yml').read_text()
@@ -28,6 +28,11 @@ assert (root/'scripts/android/MainActivity.kt').read_text().count('token_transfe
 assert "'Authorization': 'Bearer $token'" in (root/'lib/src/meta_api.dart').read_text()
 assert "'access_token': token" not in (root/'lib/src/meta_api.dart').read_text()
 assert 'ELEVENLABS_API_KEY' not in (root/'lib/src/app_model.dart').read_text()
+# A API exige JSON UTF-8; testes com string Latin-1 acentuada dão falso negativo.
+tests = (root/'test/meta_api_test.dart').read_text()
+assert 'http.Response.bytes(' in tests and 'utf8.encode(jsonEncode(' in tests
+assert "expect(pages.single.name,'Página Teste')" in tests
+assert 'Vídeos e reações 😄' in tests
 for f in root.rglob('*'):
     if not f.is_file(): continue
     assert f.suffix not in ('.jks','.keystore','.p12','.env'), f'credencial indevida no fonte: {f}'

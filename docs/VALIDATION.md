@@ -1,11 +1,23 @@
-# Validação da alpha.2
+# Validação da alpha.3
 
-Workflow #1: falhou antes da compilação Android, na tarefa **Instalar SDK Android 36**, com `sdkmanager: command not found` (exit code 127). Esta alpha.2 adiciona `android-actions/setup-android@v4` e testa a presença do comando antes da instalação.
+## Evidência do workflow #2 (18/10/2026 UTC)
 
-Verificações locais possíveis: `python3 tools/validate_source.py`, parser JSON/XML, verificação dos arquivos do código e ZIP.
+- `sdkmanager` e SDK Android 36: concluídos.
+- `flutter pub get`: concluído.
+- `python3 tools/validate_source.py`: APROVADO.
+- `flutter analyze`: **No issues found!** (6,4 segundos).
+- `flutter test`: **9 aprovados, 1 falhou**, em `test/meta_api_test.dart` > `envia bearer via cabeçalho, não via URL`.
+- Mensagem do teste falho: `A Meta retornou dados inesperados.`; origem `MetaApi.get` ao decodificar bytes. O mock `http.Response(String, 200)` usava Latin-1 sem charset, mas continha `Página Teste` com acento. JSON da API usa UTF-8. Correção no mock, não no decoder seguro da API.
+- O APK não foi compilado no workflow #2 porque `flutter test` encerrou o job com exit code 1.
 
-Não afirmar execução de `flutter analyze`, `flutter test`, Gradle, login Meta, exportação SAF nem APK instalável sem resultados reais do workflow ou testes Android.
+## Alterações alpha.3
 
-O workflow do GitHub Actions executa, nesta ordem: preparação Android, `flutter pub get`, validação estrutural, `flutter analyze`, `flutter test`, APK Debug e, com Secrets, release APK/AAB.
+- Fixture usa bytes UTF-8 explicitamente. Aserção verifica nome `Página Teste`.
+- Teste adicional garante acentos e emoji em JSON UTF-8 sem charset.
+- `tools/validate_source.py` assegura que fixture UTF-8 permanece presente.
 
-Testes planejados em aparelho: comportamento edge-to-edge API 36; abertura do wizard; autorização Meta; retorno e restrição de nomes de reações; expiração do token; importação/exportação SAF; armazenamento seguro; tema AMOLED; atualização sobre certificado release anterior.
+## Validações locais alpha.3
+
+Executar `python3 tools/validate_source.py`, parser JSON/XML, Bash `-n`, YAML e verificação CRC do ZIP. Ausência de Flutter/Dart no ambiente impede rodar `flutter test`, `flutter analyze` e Gradle localmente.
+
+**Pendências:** executar o workflow da alpha.3; testar importação SAF, login Meta, falhas de token, comportamento API 36 e APK em Android físico. Não presumir aprovação Google Play.

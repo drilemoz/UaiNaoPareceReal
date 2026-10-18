@@ -10,11 +10,33 @@ void main() {
       expect(request.url.toString(), contains('/v26.0/me/accounts'));
       expect(request.url.queryParameters.containsKey('access_token'),isFalse);
       expect(request.headers['Authorization'],'Bearer TOKEN-SUPER-PRIVADO');
-      return http.Response(jsonEncode({'data':[{'id':'123','name':'Página Teste','access_token':'PAGINA-TOKEN'}]}),200);
+      // Simula o corpo JSON em bytes UTF-8, como uma resposta HTTP real.
+      // http.Response(String, ...) sem charset usa Latin-1 na construção
+      // dos bytes e não serve de fixture para nomes com acentos.
+      return http.Response.bytes(
+        utf8.encode(jsonEncode({'data':[{'id':'123','name':'Página Teste','access_token':'PAGINA-TOKEN'}]})),
+        200,
+        headers: {'content-type': 'application/json; charset=utf-8'},
+      );
     }));
     final pages = await api.listPages('TOKEN-SUPER-PRIVADO');
     expect(pages.length,1);
     expect(pages.single.token,'PAGINA-TOKEN');
+    expect(pages.single.name,'Página Teste');
+    api.dispose();
+  });
+  test('lê acentos e emoji em JSON UTF-8 sem charset', () async {
+    final api = MetaApi(client: MockClient((request) async {
+      expect(request.headers['Authorization'], 'Bearer TOKEN');
+      return http.Response.bytes(
+        utf8.encode(jsonEncode({'id': '200', 'name': 'Vídeos e reações 😄'})),
+        200,
+        headers: {'content-type': 'application/json'},
+      );
+    }));
+    final page = await api.getPage('200', 'TOKEN');
+    expect(page.name, 'Vídeos e reações 😄');
+    expect(page.followers, isNull);
     api.dispose();
   });
   test('métricas presentes e ausentes não geram valores fictícios', () {

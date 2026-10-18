@@ -1,9 +1,7 @@
-# Uai, Não Parece Real • 0.1.0-alpha.2
+# Uai, Não Parece Real • 0.1.0-alpha.3
 
-Correção de infraestrutura de CI após o workflow 1 falhar na instalação do Android SDK 36 (`sdkmanager: command not found`). Esta versão adiciona `android-actions/setup-android@v4` e valida o SDK antes de gerar APK.
+Correção do workflow #2, que instalou corretamente o Android SDK 36 e passou na análise estática. O único teste reprovado simulava a resposta da Meta usando codificação Latin-1 para um nome com acento. O mock agora envia JSON UTF-8 em bytes, com teste adicional de Unicode e emoji.
 
-Mantém as funcionalidades da primeira versão: painel de página, publicações, histórico de métricas, importação segura de token e design azul.
+Mantidos o assistente de primeira configuração, importação de tokens, proteção no Android, painel, posts, histórico e consulta opcional de reações. Nenhuma permissão nova foi adicionada.
 
-**Leitura somente**, sem OAuth público nem postagem automática. Reações pessoais podem ser ocultas pela Meta. Requer token autorizado. Sem métricas artificiais.
-
-**APK Debug:** teste inicial, certificado temporário do runner. **APK release e AAB:** gerados quando há quatro Secrets válidos de assinatura; AAB é o formato apropriado para envio novo ao Google Play.
+**Situação:** 9 testes passaram no workflow #2 e um falhou. A correção alpha.3 passou na validação estrutural local, mas ainda requer `flutter test` e geração de APK no GitHub Actions. Acesso real à Meta continua não verificado.

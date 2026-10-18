@@ -5,8 +5,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'meta_api.dart';
 
 class AppModel extends ChangeNotifier {
-  static const version = '0.1.0-alpha.2';
-  static const versionCode = 2;
+  static const version = '0.1.0-alpha.3';
+  static const versionCode = 3;
   static const _secure = FlutterSecureStorage(
     aOptions: AndroidOptions(encryptedSharedPreferences: true));
   final MetaApi api;
