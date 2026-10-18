@@ -1,0 +1,17 @@
+.dart_tool/
+.packages
+.pub-cache/
+.pub/
+build/
+/android/
+*.iml
+.idea/
+.vscode/
+.DS_Store
+.env
+*.jks
+*.keystore
+*.p12
+key.properties
+__pycache__/
+*.pyc
